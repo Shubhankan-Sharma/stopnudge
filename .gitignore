@@ -1,0 +1,12 @@
+# Vercel local project metadata
+.vercel
+
+# Environment files / secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies and local tooling
+node_modules/
+.DS_Store
+Thumbs.db

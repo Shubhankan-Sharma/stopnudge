@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' http://localhost:11434; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="theme-color" content="#102a43">
+  <title>StopNudge — Passenger Stop Alerts</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="stops.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <p class="eyebrow">PASSENGER STOP ALERTS</p>
+      <h1>StopNudge</h1>
+      <p class="header-copy">A simple journey simulator with spoken and on-screen stop alerts.</p>
+    </div>
+  </header>
+
+  <main class="page-layout">
+    <section class="panel" aria-labelledby="route-heading">
+      <div class="section-heading">
+        <p class="eyebrow">01 / ROUTE</p>
+        <h2 id="route-heading">Plan your journey</h2>
+      </div>
+
+      <form id="routeForm" novalidate>
+        <div class="field-grid">
+          <div class="field">
+            <label for="startSelect">Starting stop</label>
+            <select id="startSelect" name="startStop" required>
+              <option value="" selected disabled>Choose a starting stop</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="destinationSelect">Destination</label>
+            <select id="destinationSelect" name="destination" required>
+              <option value="" selected disabled>Choose a destination</option>
+            </select>
+          </div>
+        </div>
+
+        <p id="selectionMessage" class="form-message" role="status">Choose a starting stop and destination. The destination must come later on the route.</p>
+
+        <div class="field speed-field">
+          <label for="speedSelect">Simulation speed</label>
+          <select id="speedSelect" name="speed">
+            <option value="1" selected>1× — 10 metres per second</option>
+            <option value="5">5× — 50 metres per second</option>
+            <option value="20">20× — 200 metres per second</option>
+          </select>
+        </div>
+
+        <div class="button-row">
+          <button id="startButton" class="button button-primary" type="submit" disabled>Start journey</button>
+          <button id="pauseButton" class="button button-secondary" type="button" disabled>Pause journey</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel journey-panel" aria-labelledby="journey-heading">
+      <div class="section-heading">
+        <p class="eyebrow">02 / JOURNEY</p>
+        <h2 id="journey-heading">Journey status</h2>
+      </div>
+
+      <p id="journeyStatus" class="status-pill" role="status">Choose a valid route to begin.</p>
+
+      <div class="distance-layout">
+        <div class="distance-card">
+          <p class="metric-label">Distance to next stop</p>
+          <p id="distanceValue" class="metric-value">—</p>
+          <p id="nextStopLabel" class="metric-caption">Next stop: not selected</p>
+        </div>
+        <div class="distance-card distance-card-muted">
+          <p class="metric-label">Total distance remaining</p>
+          <p id="remainingValue" class="metric-value metric-value-small">—</p>
+          <p class="metric-caption">Estimated by the route data</p>
+        </div>
+      </div>
+
+      <div class="announcement-block">
+        <p class="metric-label">Gemma announcement status</p>
+        <p id="gemmaStatus" class="supporting-copy">Announcements are prepared when a journey starts. Alerts never wait for Gemma.</p>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="alerts-heading">
+      <div class="section-heading">
+        <p class="eyebrow">03 / ACCESSIBILITY</p>
+        <h2 id="alerts-heading">Alerts and speech</h2>
+      </div>
+      <p class="supporting-copy">On-screen alerts are always shown. Vibration and browser notifications are optional, and spoken announcements are on by default.</p>
+
+      <div class="button-row button-row-wrap">
+        <button id="notificationButton" class="button button-secondary" type="button">Enable browser notifications</button>
+        <button id="testVibrationButton" class="button button-secondary" type="button">Test vibration</button>
+        <button id="voiceButton" class="button button-secondary" type="button" aria-pressed="true">Voice announcements: On</button>
+        <button id="shareButton" class="button button-secondary" type="button" disabled>Share my trip</button>
+      </div>
+      <p id="notificationStatus" class="small-note" role="status">Browser notifications are not enabled. On-screen alerts will still appear.</p>
+      <p id="vibrationStatus" class="small-note" role="status" aria-live="polite"></p>
+      <p id="shareStatus" class="small-note" role="status"></p>
+
+      <div class="live-alert-box">
+        <p class="metric-label">Latest on-screen alert</p>
+        <p id="liveAlert" class="live-alert-text" aria-live="polite" aria-atomic="true">No alerts yet.</p>
+      </div>
+
+      <div class="alert-history-section">
+        <h3>Alert history</h3>
+        <ul id="alertHistory" class="alert-history" aria-label="Journey alert history">
+          <li class="empty-history">Alerts will appear here as the journey progresses.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel emergency-panel" aria-labelledby="safety-heading">
+      <div class="section-heading">
+        <p class="eyebrow">04 / SAFETY</p>
+        <h2 id="safety-heading">Safety and check-ins</h2>
+      </div>
+      <p class="supporting-copy">The safety demo lets you prepare an emergency message and preview a safe-arrival check-in. The contact name is plain text used only in this page; it is not saved or sent by the safe-arrival feature.</p>
+
+      <div class="safety-feature">
+        <h3>Emergency help</h3>
+        <p class="supporting-copy">Prepare an alert with your selected journey details. StopNudge does not dispatch emergency services or send messages automatically.</p>
+        <div class="button-row button-row-wrap">
+          <button id="emergencyButton" class="button button-danger" type="button" disabled>Prepare emergency alert</button>
+          <button id="shareEmergencyButton" class="button button-secondary" type="button" disabled>Share emergency alert</button>
+        </div>
+        <p id="emergencyStatus" class="small-note" role="status" aria-live="polite">Choose a valid route to prepare an emergency alert.</p>
+        <div id="emergencyPreviewSection" class="live-alert-box" hidden>
+          <p class="metric-label">Emergency message preview</p>
+          <pre id="emergencyPreview" class="emergency-preview"></pre>
+        </div>
+      </div>
+
+      <div class="safety-feature">
+        <h3>Arrival-safe confirmation</h3>
+        <p class="supporting-copy">When the simulated journey reaches its destination, StopNudge previews a safe-arrival message; press the button to confirm the check-in on screen.</p>
+        <div class="field arrival-name-field">
+          <label for="arrivalNameInput">Contact name (plain text, demo only)</label>
+          <input id="arrivalNameInput" name="arrivalName" type="text" maxlength="80" autocomplete="off" spellcheck="false" placeholder="Enter a name for the preview" aria-describedby="arrivalNameHelp">
+        </div>
+        <p id="arrivalNameHelp" class="small-note">Used only to personalise the preview in this page; it is not saved or sent.</p>
+        <div class="button-row button-row-wrap">
+          <button id="arrivalConfirmButton" class="button button-primary" type="button" disabled>I've arrived safely</button>
+        </div>
+        <p id="arrivalStatus" class="small-note" role="status" aria-live="polite">Complete the journey to preview and confirm your safe arrival.</p>
+        <div id="arrivalPreviewSection" class="live-alert-box" hidden>
+          <p class="metric-label">Demo only: no message is sent.</p>
+          <p class="small-note">Safe-arrival message preview</p>
+          <pre id="arrivalPreview" class="emergency-preview"></pre>
+        </div>
+      </div>
+      <p class="small-note">Prototype limitation: sharing is user-initiated through the device share menu or clipboard; no contact is configured, no message is sent automatically, and no live GPS location is available.</p>
+    </section>
+
+    <p id="routeDataError" class="error-message" role="alert" hidden>The route data is invalid. Check stops.js: every stop needs a name, each non-final stop needs a positive distance to the next stop, and the final stop must use null.</p>
+  </main>
+
+  <footer class="site-footer">
+    <p>StopNudge is a simulation, not a live vehicle tracker. It does not use GPS.</p>
+  </footer>
+</body>
+</html>
