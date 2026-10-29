@@ -31,13 +31,13 @@ Open `stops.js` and edit the `STOPS` array. Each item has this format:
 
 - The simulation moves by 10 metres per second at `1×`, `50 metres per second` at `5×`, and `200 metres per second` at `20×`.
 - The on-screen distance is the distance to the next stop. Total distance remaining includes the rest of the selected route.
-- Each stop has independent 500 m and 200 m alert flags. A threshold alert fires when the simulation crosses that threshold; a segment that starts already below a threshold will not replay a threshold it has already passed.
-- Each announcement names only the stop associated with that alert, even when adjacent stops are close together. “Welcome aboard” is added only to the first alert of a journey.
+- The 500 m and 200 m alerts apply only to the selected journey destination, based on total distance remaining across the route; intermediate stops do not trigger proximity alerts. Each threshold fires at most once per journey, including when a selected destination is already within that threshold at journey start or when the final leg begins inside the threshold.
+- Gemma announcements are generated only for the selected destination and say `Destination: [name] in [distance] metres.` “Welcome aboard” is added only to the first alert of a journey.
 - This is a timer-based simulation, not a GPS tracker or live bus-location service.
 
 ## Gemma 3 / Ollama announcements
 
-StopNudge requests announcement text from Ollama at `http://localhost:11434/api/generate` using model `gemma3`. Announcement requests start when the journey starts and are processed sequentially, one stop and alert distance at a time, so the timer and alerts do not wait for them. Each request has a 15-second timeout; an unavailable, timed-out, or unsuitable response uses a labelled fallback message, and the visible alert/status includes the fallback reason, such as `Gemma timed out` or `Ollama not reachable`. The status shows `Generating...` while a request is pending. Gemma is asked for one sentence naming only the relevant stop and its distance, with at most 25 words. The browser will only connect to the local Ollama endpoint allowed by the Content Security Policy.
+StopNudge requests announcement text from Ollama at `http://localhost:11434/api/generate` using model `gemma3`. Announcement requests start when the journey starts and are processed sequentially for the selected destination at 500 m and 200 m, so the timer and alerts do not wait for them. Each request has a 15-second timeout; an unavailable, timed-out, or unsuitable response uses a labelled fallback message, and the visible alert/status includes the fallback reason, such as `Gemma timed out` or `Ollama not reachable`. The status shows `Generating...` while a request is pending. Gemma is asked for one sentence naming only the relevant stop and its distance, with at most 25 words. The browser will only connect to the local Ollama endpoint allowed by the Content Security Policy.
 
 To use Gemma, install and start [Ollama](https://ollama.com/) locally, then download the model if needed:
 
