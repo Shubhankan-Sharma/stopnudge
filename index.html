@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="StopNudge is an accessible passenger stop-alert and journey-safety prototype.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' http://localhost:11434; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="theme-color" content="#102a43">
   <title>StopNudge — Passenger Stop Alerts</title>
@@ -18,6 +19,15 @@
       <p class="header-copy">A simple journey simulator with spoken and on-screen stop alerts.</p>
     </div>
   </header>
+
+  <nav class="quick-nav" aria-label="Quick navigation">
+    <div class="quick-nav-inner">
+      <a href="#route-heading">Route</a>
+      <a href="#journey-heading">Journey</a>
+      <a href="#alerts-heading">Alerts</a>
+      <a href="#safety-heading">Safety</a>
+    </div>
+  </nav>
 
   <main class="page-layout">
     <section class="panel" aria-labelledby="route-heading">

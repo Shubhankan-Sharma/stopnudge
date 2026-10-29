@@ -2,6 +2,8 @@
 
 StopNudge is a static passenger-stop alert demo made with plain HTML, CSS, and JavaScript. It has no framework, build step, external scripts, analytics, or automatic trip sharing. The route data includes eight Galway demo stops with the distances supplied for this simulation.
 
+The interface is responsive: wide screens use a dashboard layout, while phones use a compact single-column layout, a horizontally scrollable sticky section navigator, larger touch targets, and layouts that avoid horizontal overflow. The CSS and JavaScript are local files served from the same project root.
+
 ## Run the app
 
 1. Open a terminal in the `stopnudge` project folder.
@@ -92,3 +94,11 @@ Once the repository is connected, pushes to the production branch (normally `mai
 
 The public site cannot directly use the Ollama process running on your laptop. To avoid a deployed page probing a visitor's `localhost`, StopNudge only attempts the Ollama request when the page is opened on `localhost` or `127.0.0.1`; on Vercel, announcements use the existing labelled fallback messages. The journey simulation, stop alerts, vibration test, speech synthesis, emergency preview, and arrival-safe confirmation remain available. To offer Gemma announcements to all visitors later, add a secured server-side endpoint; do not expose an Ollama service publicly or place API secrets in front-end code.
 
+
+
+## Mobile display troubleshooting
+
+- Confirm `index.html`, `style.css`, `app.js`, and `stops.js` are all in the deployed repository root. File names are case-sensitive on hosting platforms.
+- After pushing CSS changes, trigger or wait for the latest Vercel deployment and hard-refresh the phone browser.
+- If the page is visible but unstyled, open `https://YOUR-DEPLOYMENT-URL/style.css` on the phone; it should show CSS text rather than a 404 page.
+- Use the sticky Route / Journey / Alerts / Safety navigation to jump between sections on mobile.
